@@ -1,0 +1,17 @@
+#默认的位置是src/main/webapp 这里可以更换，比如/page/ 那么目录就变成了src/main/webapp/pages
+server:
+  port: 8088
+spring:
+  mvc:
+    view:
+      prefix: /pages/
+      suffix: .jsp
+  application:
+    name: zh-abcd
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://user:password123@localhost:8761/eureka
+logging:
+  level:
+    root: INFO

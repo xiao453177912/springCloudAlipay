@@ -1,0 +1,17 @@
+server:
+  port: 80
+spring:
+  application:
+    name: gateway-zuul
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://user:password123@localhost:8761/eureka
+zuul:
+  routes:
+    api-a:
+      path: /api-a/**  
+      serviceId: zh-cart
+    api-b:
+      path: /api-b/**
+      serviceId: zh-abcd

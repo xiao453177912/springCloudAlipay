@@ -1,0 +1,161 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>订单管理</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<style type="text/css">
+body {
+	font-family: "微软雅黑";
+	background-color: #EDEDED;
+}
+
+h2 {
+	text-align: center;
+}
+
+table {
+	margin: 0 auto;
+	text-align: center;
+	border-collapse: collapse;
+	font-size: 16px
+}
+
+td, th {
+	padding: 7px;
+}
+
+th {
+	background-color: #DCDCDC;
+	width: 120px;
+}
+
+th.desc {
+	width: 500px;
+}
+
+hr {
+	margin-bottom: 20px;
+	border: 1px solid #aaa;
+}
+</style>
+</head>
+<body id="body">
+	<div id="div">
+		<table border="1" id="tbodyId">
+			<tr>
+				<th>订单编号</th>
+				<th>总价</th>
+				<th class="desc">描述信息</th>
+				<th>操 作</th>
+			</tr>
+		</table>
+		<tbody id="tbodyId"></tbody>
+		<div id="pay"></div>
+	</div>
+	<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			//console.log('jquery load complete');
+			//页面加载完成向服务器发异步请求加载数据
+			doGetObjects();
+			console.log("hello ajax");
+		});
+		function doGetObjects() {
+			//1.定义请求参数
+			var params = "";//{pageCurrent:1,name:"o"}
+			//2.定义请求url
+			var url = "/api-a/cart/Order";
+			//3.发起异步请求
+			$.ajax({//new XMLHttpRequest()
+				url : url,
+				data : params,
+				type : "get",
+				dataType : "json",//"text"
+				async : true,
+				success : function(result) {//JsonResult
+					doHandleResponseResult(result);
+
+				}
+			});
+		}
+		function doHandleResponseResult(result) {
+			//console.log(result);
+			if (result.status == 200) {
+				//console.log(result.data);
+				doSetTableBodyOkRows(result.data);
+			} else {
+				alert(result.message);
+			}
+		}
+
+		function doSetTableBodyOkRows(records) {
+			console.log(records);
+			//1.获取body对象,并清空内容
+			var tBody = $("#tbodyId");
+			//tBody.empty();
+
+			for ( var i in records) {//records[i]
+				//console.log(records[i]);
+				//2.1创建tr对象
+				var tr = $("<tr></tr>")
+				//2.2创建td对象
+				var tds = doCreateTds(records[i]);
+				//2.3将td追加到tr
+				tr.append(tds);
+				//2.4将tr追加到tbody
+				tBody.append(tr);
+				if(records[i].alipayStatus == "1"){
+					$('#updateId').html("正在发货");
+				}else{
+					$('#updateId').html('<a href="#" id="zh">去付款</a>');
+				}
+				
+			}
+			function doCreateTds(row) {
+				var tds = '<td id="WIDout_trade_no">' + row.itemId + "</td>"
+						+ '<td id="WIDtotal_amount">' + row.itemPrice + "</td>"
+						+ '<td id="WIDbody">' + row.itemTitle + "</td>"
+						+ '<td id="updateId"></td>';
+				return tds;
+			}
+			$("#zh").click(function() {
+				//alert("引入成功!!");
+				doGetAlipay();
+			});
+			function doGetAlipay() {
+				//1.定义请求参数
+				//2.定义请求url
+				var url = "/api-b/alipay/alipay.trade.page.pay";
+				console.log(url);
+				//商户订单号
+				var WIDout_trade_no = document
+						.getElementById("WIDout_trade_no").innerHTML;
+				//订单名称
+				///var WIDsubject = document.getElementById("WIDsubject").value;
+				//付款金额
+				var WIDtotal_amount = document
+						.getElementById("WIDtotal_amount").innerHTML;
+				//商品描述
+				var WIDbody = document.getElementById("WIDbody").innerHTML;
+				//3.发起请求
+				$.ajax({
+					url : url,
+					data : {
+						"WIDout_trade_no" : WIDout_trade_no,
+						"WIDsubject" : "zh",
+						"WIDtotal_amount" : WIDtotal_amount,
+						"WIDbody" : WIDbody
+					},
+					type : "post",
+					dataType : "text",
+					async : true,
+					success : function(result) {//JsonResult
+						console.log(result);
+						$("#pay").html(result);
+					}
+				});
+			}
+		}
+	</script>
+</body>
+</html>
