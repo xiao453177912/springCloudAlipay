@@ -24,6 +24,11 @@ public class CartServiceImpl implements CartService{
 		return cartMapper.selectList(wrapper);
 	}
 	
+	public List<Cart> queryCartList() {
+		
+		return cartMapper.queryCartList();
+	}
+	
 	public void updateNum(Cart cart){
 		EntityWrapper<Cart> wrapper = new EntityWrapper<Cart>();
 		wrapper.where("user_id={0}", cart.getUserId());
@@ -46,4 +51,5 @@ public class CartServiceImpl implements CartService{
 		cart.setItemId(563379l);
 		cartMapper.updateAlipayStatus(cart);
 	}
+
 }

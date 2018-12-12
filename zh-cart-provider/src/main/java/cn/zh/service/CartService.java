@@ -10,4 +10,5 @@ public interface CartService {
 	public void delete(Long userId, Long itemId);
 	public void updateNum(Cart cart);
 	public void updateStatus(Cart cart);
+	public List<Cart> queryCartList();
 }

@@ -28,5 +28,9 @@ public class CartController {
 		System.out.println(cartFeign.query(7l));
 		return cartFeign.query(7l);
 	}
+	@RequestMapping("/cart/orderList")
+	public String orderList(){
+		return "order_list";
+	}
 	
 }

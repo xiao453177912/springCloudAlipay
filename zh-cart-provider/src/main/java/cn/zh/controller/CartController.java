@@ -27,6 +27,16 @@ public class CartController {
 			return SysResult.build(201, "查询我的购物车失败!");
 		}
 	}
+	@RequestMapping("/cart/queryCartList")
+	public SysResult queryCartList() {
+		try {
+			List<Cart> cartList = cartService.queryCartList();
+			return SysResult.ok(cartList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return SysResult.build(201, "查询失败!");
+		}
+	}
 
 
 	@RequestMapping("/cart/delete/{userId}/{itemId}")
